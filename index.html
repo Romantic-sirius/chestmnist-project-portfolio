@@ -1,4 +1,4 @@
-﻿<!doctype html>
+<!doctype html>
 <html lang="zh-CN">
 <head>
   <meta charset="utf-8" />
@@ -17,7 +17,7 @@
       <h2>核心结论</h2>
       <ul>
         <li>最佳测试 AUC：fair_resnet18_reg2（0.7942）</li>
-        <li>ViT 预训练显著提升：0.7623  0.7890</li>
+        <li>ViT 预训练显著提升：0.7623 → 0.7890</li>
         <li>pos_weight 带来召回倾向，但误检风险上升</li>
       </ul>
     </section>
@@ -64,7 +64,8 @@
           <h3>fair_resnet18_reg2</h3>
           <a href="fair_resnet18_reg2/metrics_curve.png" target="_blank">指标曲线</a>
           <a href="fair_resnet18_reg2/gradcam/gradcam_000_c5.png" target="_blank">Grad-CAM 示例</a>
-          <a href="fair_resnet18_reg2/error_analysis/error_01_id2584.png" target="_blank">错误样例示例</a>
+          <!-- ✅ 下面这行我帮你修正了！ -->
+          <a href="fair_resnet18_reg2/error_analysis/error_01.png" target="_blank">错误样例示例</a>
           <a href="fair_resnet18_reg2/error_analysis/errors_topk.json" target="_blank">errors_topk.json</a>
         </article>
       </div>
