@@ -1,85 +1,107 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="zh-CN">
 <head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>ChestMNIST Portfolio Showcase</title>
-  <link rel="stylesheet" href="styles.css" />
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>ChestMNIST 作品集 | 医学影像分类</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:-apple-system,BlinkMacSystemFont,Segoe UI,Roboto,Helvetica,Arial,sans-serif;background:#f7f8fa;color:#222}
+header{background:linear-gradient(135deg,#1f2937,#111827);color:#fff;padding:2.5rem 1rem;text-align:center}
+header h1{font-size:2rem;margin-bottom:.5rem}
+header p{color:#d1d5db;max-width:700px;margin:0 auto}
+.container{max-width:1000px;margin:0 auto;padding:2rem 1rem}
+.card{background:#fff;border-radius:14px;box-shadow:0 6px 20px rgba(0,0,0,.06);padding:1.5rem;margin-bottom:1.5rem}
+.card h2{font-size:1.3rem;margin-bottom:1rem;color:#111827;border-left:4px solid #2563eb;padding-left:.6rem}
+ul,ol{padding-left:1.6rem;line-height:1.7}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:1rem;margin-top:1rem}
+figure img{width:100%;border-radius:10px;box-shadow:0 2px 10px rgba(0,0,0,.08)}
+figcaption{text-align:center;margin-top:.5rem;color:#555}
+.exp-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:1.2rem;margin-top:1rem}
+.exp-grid article{background:#f9fafb;border-radius:12px;padding:1.2rem}
+.exp-grid h3{font-size:1rem;margin-bottom:.8rem;color:#1f2937}
+.exp-grid a{display:block;margin:.4rem 0;color:#2563eb;text-decoration:none}
+.exp-grid a:hover{text-decoration:underline}
+@media(max-width:640px){.grid2{grid-template-columns:1fr}}
+</style>
 </head>
 <body>
-  <header class="hero">
-    <h1>ChestMNIST 多标签分类作品集</h1>
-    <p>四组消融实验对比：ViT 预训练 / 类别重加权（pos_weight）/ ResNet18 baseline</p>
-  </header>
 
-  <main class="container">
-    <section class="card">
-      <h2>核心结论</h2>
-      <ul>
-        <li>最佳测试 AUC：fair_resnet18_reg2（0.7942）</li>
-        <li>ViT 预训练显著提升：0.7623 → 0.7890</li>
-        <li>pos_weight 带来召回倾向，但误检风险上升</li>
-      </ul>
-    </section>
+<header>
+  <h1>ChestMNIST 多标签医学影像分类</h1>
+  <p>ResNet18 / ViT 消融实验 · 预训练 · 类别不平衡 · 可解释性与错误分析</p>
+</header>
 
-    <section class="card">
-      <h2>全局对比图</h2>
-      <div class="grid2">
-        <figure>
-          <img src="comparison_plots/comparison_auc.png" alt="AUC comparison" />
-          <figcaption>AUC Comparison</figcaption>
-        </figure>
-        <figure>
-          <img src="comparison_plots/comparison_val_loss.png" alt="Validation loss comparison" />
-          <figcaption>Validation Loss Comparison</figcaption>
-        </figure>
-      </div>
-    </section>
+<div class="container">
+  <section class="card">
+    <h2>核心结论</h2>
+    <ul>
+      <li>最优模型：fair_resnet18_reg2，测试 AUC <strong>0.7942</strong></li>
+      <li>ViT 预训练显著提升性能：0.7623 → 0.7890</li>
+      <li>pos_weight 提升召回倾向，但会增加误检（假阳性）</li>
+      <li>ResNet18 在医学小样本任务中泛化更稳定、更鲁棒</li>
+    </ul>
+  </section>
 
-    <section class="card">
-      <h2>实验目录</h2>
-      <div class="exp-grid">
-        <article>
-          <h3>vit_pretrain_off_posw_off</h3>
-          <a href="vit_pretrain_off_posw_off/metrics_curve.png" target="_blank">指标曲线</a>
-          <a href="vit_pretrain_off_posw_off/gradcam/gradcam_000_c3.png" target="_blank">Grad-CAM 示例</a>
-          <a href="vit_pretrain_off_posw_off/error_analysis/error_01_id7154.png" target="_blank">错误样例示例</a>
-          <a href="vit_pretrain_off_posw_off/error_analysis/errors_topk.json" target="_blank">errors_topk.json</a>
-        </article>
-        <article>
-          <h3>vit_pretrain_on_posw_off</h3>
-          <a href="vit_pretrain_on_posw_off/metrics_curve.png" target="_blank">指标曲线</a>
-          <a href="vit_pretrain_on_posw_off/gradcam/gradcam_000_c4.png" target="_blank">Grad-CAM 示例</a>
-          <a href="vit_pretrain_on_posw_off/error_analysis/error_01_id2584.png" target="_blank">错误样例示例</a>
-          <a href="vit_pretrain_on_posw_off/error_analysis/errors_topk.json" target="_blank">errors_topk.json</a>
-        </article>
-        <article>
-          <h3>vit_pretrain_on_posw_on</h3>
-          <a href="vit_pretrain_on_posw_on/metrics_curve.png" target="_blank">指标曲线</a>
-          <a href="vit_pretrain_on_posw_on/gradcam/gradcam_000_c5.png" target="_blank">Grad-CAM 示例</a>
-          <a href="vit_pretrain_on_posw_on/error_analysis/error_01_id14381.png" target="_blank">错误样例示例</a>
-          <a href="vit_pretrain_on_posw_on/error_analysis/errors_topk.json" target="_blank">errors_topk.json</a>
-        </article>
-        <article>
-          <h3>fair_resnet18_reg2</h3>
-          <a href="fair_resnet18_reg2/metrics_curve.png" target="_blank">指标曲线</a>
-          <a href="fair_resnet18_reg2/gradcam/gradcam_000_c5.png" target="_blank">Grad-CAM 示例</a>
-          <!-- ✅ 下面这行我帮你修正了！ -->
-          <a href="fair_resnet18_reg2/error_analysis/error_01.png" target="_blank">错误样例示例</a>
-          <a href="fair_resnet18_reg2/error_analysis/errors_topk.json" target="_blank">errors_topk.json</a>
-        </article>
-      </div>
-    </section>
+  <section class="card">
+    <h2>全局对比</h2>
+    <div class="grid2">
+      <figure>
+        <img src="comparison_plots/comparison_auc.png" alt="AUC 对比">
+        <figcaption>AUC 对比</figcaption>
+      </figure>
+      <figure>
+        <img src="comparison_plots/comparison_val_loss.png" alt="Val Loss 对比">
+        <figcaption>验证损失对比</figcaption>
+      </figure>
+    </div>
+  </section>
 
-    <section class="card">
-      <h2>阅读建议</h2>
-      <ol>
-        <li>先看 AUC 对比图确认最优组。</li>
-        <li>再看每组 metrics_curve 判断是否过拟合。</li>
-        <li>看 Grad-CAM 是否关注肺野关键区域。</li>
-        <li>看 error_analysis 理解漏检/过检模式。</li>
-      </ol>
-    </section>
-  </main>
+  <section class="card">
+    <h2>实验结果一览</h2>
+    <div class="exp-grid">
+      <article>
+        <h3>vit_pretrain_off_posw_off</h3>
+        <a href="vit_pretrain_off_posw_off/metrics_curve.png" target="_blank">指标曲线</a>
+        <a href="vit_pretrain_off_posw_off/gradcam/gradcam_000_c3.png" target="_blank">Grad-CAM</a>
+        <a href="vit_pretrain_off_posw_off/error_analysis/error_01_id7154.png" target="_blank">错误样例</a>
+        <a href="vit_pretrain_off_posw_off/error_analysis/errors_topk.json" target="_blank">错误 JSON</a>
+      </article>
+      <article>
+        <h3>vit_pretrain_on_posw_off</h3>
+        <a href="vit_pretrain_on_posw_off/metrics_curve.png" target="_blank">指标曲线</a>
+        <a href="vit_pretrain_on_posw_off/gradcam/gradcam_000_c4.png" target="_blank">Grad-CAM</a>
+        <a href="vit_pretrain_on_posw_off/error_analysis/error_01_id2584.png" target="_blank">错误样例</a>
+        <a href="vit_pretrain_on_posw_off/error_analysis/errors_topk.json" target="_blank">错误 JSON</a>
+      </article>
+      <article>
+        <h3>vit_pretrain_on_posw_on</h3>
+        <a href="vit_pretrain_on_posw_on/metrics_curve.png" target="_blank">指标曲线</a>
+        <a href="vit_pretrain_on_posw_on/gradcam/gradcam_000_c5.png" target="_blank">Grad-CAM</a>
+        <a href="vit_pretrain_on_posw_on/error_analysis/error_01_id14381.png" target="_blank">错误样例</a>
+        <a href="vit_pretrain_on_posw_on/error_analysis/errors_topk.json" target="_blank">错误 JSON</a>
+      </article>
+      <article>
+        <h3>fair_resnet18_reg2</h3>
+        <a href="fair_resnet18_reg2/metrics_curve.png" target="_blank">指标曲线</a>
+        <a href="fair_resnet18_reg2/gradcam/gradcam_000_c5.png" target="_blank">Grad-CAM</a>
+        <!-- ✅ 这里已经改成你文件夹里真实存在的文件名！ -->
+        <a href="fair_resnet18_reg2/error_analysis/error_01_id13260.png" target="_blank">错误样例</a>
+        <a href="fair_resnet18_reg2/error_analysis/errors_topk.json" target="_blank">错误 JSON</a>
+      </article>
+    </div>
+  </section>
+
+  <section class="card">
+    <h2>阅读建议（面试官视角）</h2>
+    <ol>
+      <li>先看 AUC 对比，快速定位最优模型</li>
+      <li>查看训练曲线，判断是否过拟合</li>
+      <li>Grad-CAM 检查模型是否关注肺野病灶区域</li>
+      <li>错误样例分析漏检 / 过检模式与类别不平衡影响</li>
+    </ol>
+  </section>
+</div>
+
 </body>
 </html>
