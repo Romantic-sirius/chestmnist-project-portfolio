@@ -44,10 +44,27 @@
 4. 每组看 gradcam/：检查模型关注区域是否合理。
 5. 每组看 error_analysis/：分析高错误样例模式（漏检/过检）。
 
-## 发布方式
+## 在线作品集 · GitHub Pages 部署
 
-- 本目录可直接上传到 GitHub 仓库并启用 GitHub Pages。
-- 入口页面：index.html
+本仓库已配置好静态作品集页面，可一键通过 GitHub Pages 对外发布。
+
+### 启用 GitHub Pages（首次）
+
+1. 进入仓库主页，点击顶部的 **Settings**（设置）。
+2. 在左侧导航栏找到 **Pages**（或 "Code and automation > Pages"）。
+3. 在 **Source** 下拉菜单中选择 **Deploy from a branch**。
+4. 在 **Branch** 下拉中选择 `main`，目录选择 `/（root）`，点击 **Save**。
+5. 等待约 1–2 分钟，页面顶部会出现发布地址，格式为：
+   `https://<username>.github.io/<repo-name>/`
+
+### 后续更新
+
+向 `main` 分支推送任何提交后，GitHub Pages 会自动重新部署，无需手动操作。
+
+### 入口页面
+
+- `index.html`（作品集主页，链接到所有实验结果）
+- `styles.css`（独立样式文件）
 
 ## 备注
 

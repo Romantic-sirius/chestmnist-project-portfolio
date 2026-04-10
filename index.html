@@ -3,104 +3,701 @@
 <head>
 <meta charset="UTF-8"/>
 <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-<title>ChestMNIST 作品集 | 医学影像分类</title>
-<style>
-*{box-sizing:border-box;margin:0;padding:0}
-body{font-family:-apple-system,BlinkMacSystemFont,Segoe UI,Roboto,Helvetica,Arial,sans-serif;background:#f7f8fa;color:#222}
-header{background:linear-gradient(135deg,#1f2937,#111827);color:#fff;padding:2.5rem 1rem;text-align:center}
-header h1{font-size:2rem;margin-bottom:.5rem}
-header p{color:#d1d5db;max-width:700px;margin:0 auto}
-.container{max-width:1000px;margin:0 auto;padding:2rem 1rem}
-.card{background:#fff;border-radius:14px;box-shadow:0 6px 20px rgba(0,0,0,.06);padding:1.5rem;margin-bottom:1.5rem}
-.card h2{font-size:1.3rem;margin-bottom:1rem;color:#111827;border-left:4px solid #2563eb;padding-left:.6rem}
-ul,ol{padding-left:1.6rem;line-height:1.7}
-.grid2{display:grid;grid-template-columns:1fr 1fr;gap:1rem;margin-top:1rem}
-figure img{width:100%;border-radius:10px;box-shadow:0 2px 10px rgba(0,0,0,.08)}
-figcaption{text-align:center;margin-top:.5rem;color:#555}
-.exp-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:1.2rem;margin-top:1rem}
-.exp-grid article{background:#f9fafb;border-radius:12px;padding:1.2rem}
-.exp-grid h3{font-size:1rem;margin-bottom:.8rem;color:#1f2937}
-.exp-grid a{display:block;margin:.4rem 0;color:#2563eb;text-decoration:none}
-.exp-grid a:hover{text-decoration:underline}
-@media(max-width:640px){.grid2{grid-template-columns:1fr}}
-</style>
+<title>ChestMNIST 多标签分类 · 算法作品集</title>
+<link rel="stylesheet" href="styles.css"/>
 </head>
 <body>
 
-<header>
-  <h1>ChestMNIST 多标签医学影像分类</h1>
-  <p>ResNet18 / ViT 消融实验 · 预训练 · 类别不平衡 · 可解释性与错误分析</p>
+<!-- ===== STICKY NAV ===== -->
+<nav class="topnav" id="topnav">
+  <div class="nav-inner">
+    <span class="nav-logo">ChestMNIST</span>
+    <ul class="nav-links">
+      <li><a href="#overview">Overview</a></li>
+      <li><a href="#task">Task</a></li>
+      <li><a href="#results">Results</a></li>
+      <li><a href="#ablations">Ablations</a></li>
+      <li><a href="#interpretability">GradCAM</a></li>
+      <li><a href="#error-analysis">Error Analysis</a></li>
+      <li><a href="#reproducibility">Reproducibility</a></li>
+    </ul>
+    <button class="nav-toggle" id="navToggle" aria-label="Toggle menu">☰</button>
+  </div>
+</nav>
+
+<!-- ===== HERO / OVERVIEW ===== -->
+<header class="hero" id="overview">
+  <div class="hero-inner">
+    <div class="hero-badge-row">
+      <span class="pill pill-blue">多标签分类</span>
+      <span class="pill pill-gray">MedMNIST · ChestMNIST</span>
+      <span class="pill pill-gray">ResNet18 / ViT-B/16</span>
+      <span class="pill pill-green">消融实验</span>
+    </div>
+    <h1>ChestMNIST 多标签胸部 X 光分类</h1>
+    <p class="hero-sub">14 类多标签识别 · 预训练消融 · 类别不平衡 · Grad-CAM 可解释性 · 错误分析 · 4 组对照实验</p>
+
+    <!-- KEY METRICS -->
+    <div class="kpi-row">
+      <div class="kpi">
+        <span class="kpi-val">0.7942</span>
+        <span class="kpi-label">最优 Test AUC</span>
+      </div>
+      <div class="kpi">
+        <span class="kpi-val">+3.5%</span>
+        <span class="kpi-label">预训练 AUC 提升</span>
+      </div>
+      <div class="kpi">
+        <span class="kpi-val">14</span>
+        <span class="kpi-label">目标类别数</span>
+      </div>
+      <div class="kpi">
+        <span class="kpi-val">4</span>
+        <span class="kpi-label">消融实验组</span>
+      </div>
+    </div>
+
+    <!-- QUICK LINKS -->
+    <div class="quick-links">
+      <span class="ql-label">快速跳转：</span>
+      <a class="ql-btn" href="comparison_plots/comparison_auc.png" target="_blank" rel="noopener noreferrer">📈 AUC 对比图</a>
+      <a class="ql-btn" href="comparison_plots/comparison_val_loss.png" target="_blank" rel="noopener noreferrer">📉 Val Loss 图</a>
+      <a class="ql-btn" href="fair_resnet18_reg2/metrics_curve.png" target="_blank" rel="noopener noreferrer">🏆 最优曲线</a>
+      <a class="ql-btn" href="fair_resnet18_reg2/gradcam/gradcam_000_c5.png" target="_blank" rel="noopener noreferrer">🔍 GradCAM</a>
+      <a class="ql-btn" href="fair_resnet18_reg2/error_analysis/errors_topk.json" target="_blank" rel="noopener noreferrer">📋 错误 JSON</a>
+    </div>
+  </div>
 </header>
 
-<div class="container">
-  <section class="card">
-    <h2>核心结论</h2>
-    <ul>
-      <li>最优模型：fair_resnet18_reg2，测试 AUC <strong>0.7942</strong></li>
-      <li>ViT 预训练显著提升性能：0.7623 → 0.7890</li>
-      <li>pos_weight 提升召回倾向，但会增加误检（假阳性）</li>
-      <li>ResNet18 在医学小样本任务中泛化更稳定、更鲁棒</li>
-    </ul>
+<main class="container">
+
+  <!-- ===== TASK & DATASET ===== -->
+  <section class="section" id="task">
+    <h2 class="section-title">任务定义 &amp; 数据集</h2>
+    <div class="task-grid">
+      <div class="card">
+        <h3 class="card-title">任务定义</h3>
+        <table class="info-table">
+          <tr><td class="ik">任务类型</td><td>多标签图像分类（Multi-Label）</td></tr>
+          <tr><td class="ik">评估指标</td><td>Macro AUC（14 类平均）</td></tr>
+          <tr><td class="ik">损失函数</td><td>BCEWithLogitsLoss + 可选 pos_weight</td></tr>
+          <tr><td class="ik">类别数</td><td>14 种胸部 X 光病理</td></tr>
+          <tr><td class="ik">挑战点</td><td>严重类别不平衡、小分辨率（28×28）、多标签共存</td></tr>
+        </table>
+      </div>
+      <div class="card">
+        <h3 class="card-title">数据集</h3>
+        <table class="info-table">
+          <tr><td class="ik">来源</td><td>MedMNIST v2 · ChestMNIST</td></tr>
+          <tr><td class="ik">原始数据</td><td>NIH ChestX-ray14</td></tr>
+          <tr><td class="ik">分辨率</td><td>28 × 28（灰度）</td></tr>
+          <tr><td class="ik">划分</td><td>Train 78,468 / Val 11,219 / Test 22,433</td></tr>
+          <tr><td class="ik">不平衡比</td><td>最高类别正例率 &gt; 40%；最低 &lt; 1%</td></tr>
+        </table>
+      </div>
+      <div class="card">
+        <h3 class="card-title">模型架构</h3>
+        <table class="info-table">
+          <tr><td class="ik">ViT</td><td>ViT-B/16（timm），输入 224×224</td></tr>
+          <tr><td class="ik">ResNet18</td><td>torchvision ResNet18，ImageNet 预训练</td></tr>
+          <tr><td class="ik">分类头</td><td>Linear(hidden, 14) + Sigmoid（推理时）</td></tr>
+          <tr><td class="ik">正则化</td><td>Dropout 0.5 + Weight Decay 0.012</td></tr>
+          <tr><td class="ik">训练</td><td>AdamW · AMP · Grad Accum × 8</td></tr>
+        </table>
+      </div>
+    </div>
   </section>
 
-  <section class="card">
-    <h2>全局对比</h2>
+  <!-- ===== RESULTS / GLOBAL COMPARISON ===== -->
+  <section class="section" id="results">
+    <h2 class="section-title">全局对比结果</h2>
     <div class="grid2">
-      <figure>
-        <img src="comparison_plots/comparison_auc.png" alt="AUC 对比">
-        <figcaption>AUC 对比</figcaption>
-      </figure>
-      <figure>
-        <img src="comparison_plots/comparison_val_loss.png" alt="Val Loss 对比">
-        <figcaption>验证损失对比</figcaption>
-      </figure>
+      <div class="card fig-card">
+        <h3 class="card-title">Test AUC 对比</h3>
+        <figure>
+          <a href="comparison_plots/comparison_auc.png" target="_blank" rel="noopener noreferrer">
+            <img src="comparison_plots/comparison_auc.png" alt="各实验 AUC 对比" loading="lazy"/>
+          </a>
+          <figcaption>四组实验 Test AUC 横向对比（ResNet18 最优）</figcaption>
+        </figure>
+      </div>
+      <div class="card fig-card">
+        <h3 class="card-title">Val Loss 对比</h3>
+        <figure>
+          <a href="comparison_plots/comparison_val_loss.png" target="_blank" rel="noopener noreferrer">
+            <img src="comparison_plots/comparison_val_loss.png" alt="验证损失对比" loading="lazy"/>
+          </a>
+          <figcaption>训练过程验证损失曲线（ViT 收敛平稳，ResNet 收敛快）</figcaption>
+        </figure>
+      </div>
+    </div>
+
+    <!-- Summary Table -->
+    <div class="card" style="margin-top:1.2rem;">
+      <h3 class="card-title">实验汇总表</h3>
+      <div class="table-wrap">
+        <table class="result-table">
+          <thead>
+            <tr>
+              <th>实验名称</th>
+              <th>架构</th>
+              <th>预训练</th>
+              <th>pos_weight</th>
+              <th>Val AUC</th>
+              <th>Test AUC</th>
+              <th>Epochs</th>
+              <th>资源</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><code>vit_pretrain_off_posw_off</code></td>
+              <td><span class="tag tag-vit">ViT</span></td>
+              <td><span class="icon-no">✗</span></td>
+              <td><span class="icon-no">✗</span></td>
+              <td>0.7653</td>
+              <td>0.7623</td>
+              <td>28</td>
+              <td class="link-cell">
+                <a href="vit_pretrain_off_posw_off/metrics_curve.png" target="_blank" rel="noopener noreferrer">曲线</a>
+                <a href="vit_pretrain_off_posw_off/gradcam/gradcam_000_c3.png" target="_blank" rel="noopener noreferrer">CAM</a>
+                <a href="vit_pretrain_off_posw_off/error_analysis/errors_topk.json" target="_blank" rel="noopener noreferrer">JSON</a>
+              </td>
+            </tr>
+            <tr>
+              <td><code>vit_pretrain_on_posw_off</code></td>
+              <td><span class="tag tag-vit">ViT</span></td>
+              <td><span class="icon-yes">✓</span></td>
+              <td><span class="icon-no">✗</span></td>
+              <td>0.7915</td>
+              <td>0.7890</td>
+              <td>13</td>
+              <td class="link-cell">
+                <a href="vit_pretrain_on_posw_off/metrics_curve.png" target="_blank" rel="noopener noreferrer">曲线</a>
+                <a href="vit_pretrain_on_posw_off/gradcam/gradcam_000_c4.png" target="_blank" rel="noopener noreferrer">CAM</a>
+                <a href="vit_pretrain_on_posw_off/error_analysis/errors_topk.json" target="_blank" rel="noopener noreferrer">JSON</a>
+              </td>
+            </tr>
+            <tr>
+              <td><code>vit_pretrain_on_posw_on</code></td>
+              <td><span class="tag tag-vit">ViT</span></td>
+              <td><span class="icon-yes">✓</span></td>
+              <td><span class="icon-yes">✓</span></td>
+              <td>0.7911</td>
+              <td>0.7846</td>
+              <td>9</td>
+              <td class="link-cell">
+                <a href="vit_pretrain_on_posw_on/metrics_curve.png" target="_blank" rel="noopener noreferrer">曲线</a>
+                <a href="vit_pretrain_on_posw_on/gradcam/gradcam_000_c5.png" target="_blank" rel="noopener noreferrer">CAM</a>
+                <a href="vit_pretrain_on_posw_on/error_analysis/errors_topk.json" target="_blank" rel="noopener noreferrer">JSON</a>
+              </td>
+            </tr>
+            <tr class="row-best">
+              <td><code>fair_resnet18_reg2</code> <span class="badge-best">BEST</span></td>
+              <td><span class="tag tag-res">ResNet18</span></td>
+              <td><span class="icon-yes">✓</span></td>
+              <td><span class="icon-yes">✓</span></td>
+              <td><strong>0.7951</strong></td>
+              <td><strong class="auc-best">0.7942</strong></td>
+              <td>14</td>
+              <td class="link-cell">
+                <a href="fair_resnet18_reg2/metrics_curve.png" target="_blank" rel="noopener noreferrer">曲线</a>
+                <a href="fair_resnet18_reg2/gradcam/gradcam_000_c5.png" target="_blank" rel="noopener noreferrer">CAM</a>
+                <a href="fair_resnet18_reg2/error_analysis/errors_topk.json" target="_blank" rel="noopener noreferrer">JSON</a>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
     </div>
   </section>
 
-  <section class="card">
-    <h2>实验结果一览</h2>
-    <div class="exp-grid">
-      <article>
-        <h3>vit_pretrain_off_posw_off</h3>
-        <a href="vit_pretrain_off_posw_off/metrics_curve.png" target="_blank">指标曲线</a>
-        <a href="vit_pretrain_off_posw_off/gradcam/gradcam_000_c3.png" target="_blank">Grad-CAM</a>
-        <a href="vit_pretrain_off_posw_off/error_analysis/error_01_id7154.png" target="_blank">错误样例</a>
-        <a href="vit_pretrain_off_posw_off/error_analysis/errors_topk.json" target="_blank">错误 JSON</a>
-      </article>
-      <article>
-        <h3>vit_pretrain_on_posw_off</h3>
-        <a href="vit_pretrain_on_posw_off/metrics_curve.png" target="_blank">指标曲线</a>
-        <a href="vit_pretrain_on_posw_off/gradcam/gradcam_000_c4.png" target="_blank">Grad-CAM</a>
-        <a href="vit_pretrain_on_posw_off/error_analysis/error_01_id2584.png" target="_blank">错误样例</a>
-        <a href="vit_pretrain_on_posw_off/error_analysis/errors_topk.json" target="_blank">错误 JSON</a>
-      </article>
-      <article>
-        <h3>vit_pretrain_on_posw_on</h3>
-        <a href="vit_pretrain_on_posw_on/metrics_curve.png" target="_blank">指标曲线</a>
-        <a href="vit_pretrain_on_posw_on/gradcam/gradcam_000_c5.png" target="_blank">Grad-CAM</a>
-        <a href="vit_pretrain_on_posw_on/error_analysis/error_01_id14381.png" target="_blank">错误样例</a>
-        <a href="vit_pretrain_on_posw_on/error_analysis/errors_topk.json" target="_blank">错误 JSON</a>
-      </article>
-      <article>
-        <h3>fair_resnet18_reg2</h3>
-        <a href="fair_resnet18_reg2/metrics_curve.png" target="_blank">指标曲线</a>
-        <a href="fair_resnet18_reg2/gradcam/gradcam_000_c5.png" target="_blank">Grad-CAM</a>
-        <a href="fair_resnet18_reg2/error_analysis/error_01_id13260.png" target="_blank">错误样例</a>
-        <a href="fair_resnet18_reg2/error_analysis/errors_topk.json" target="_blank">错误 JSON</a>
-      </article>
+  <!-- ===== ABLATIONS ===== -->
+  <section class="section" id="ablations">
+    <h2 class="section-title">消融实验分析</h2>
+    <div class="ablation-grid">
+      <div class="card ablation-card">
+        <div class="abl-icon">🔬</div>
+        <h3>预训练的影响（ViT）</h3>
+        <p>相同架构（ViT）下，开启 ImageNet 预训练后：</p>
+        <ul>
+          <li>Test AUC：0.7623 → <strong>0.7890</strong>（+<span class="highlight">+3.5%</span>）</li>
+          <li>收敛轮次：28 epochs → 13 epochs（快约 2×）</li>
+        </ul>
+        <p class="insight">结论：预训练权重带来显著迁移收益，尤其在小分辨率医学影像上。</p>
+      </div>
+      <div class="card ablation-card">
+        <div class="abl-icon">⚖️</div>
+        <h3>pos_weight 的影响（ViT）</h3>
+        <p>ViT 预训练基础上，开启 pos_weight 后：</p>
+        <ul>
+          <li>Test AUC：0.7890 → 0.7846（<span class="highlight-neg">-0.6%</span>）</li>
+          <li>召回率倾向提升，但假阳性率同步上升</li>
+        </ul>
+        <p class="insight">结论：pos_weight 对不平衡有帮助，但 AUC 上反而略降；需权衡精准率/召回率。</p>
+      </div>
+      <div class="card ablation-card">
+        <div class="abl-icon">🏆</div>
+        <h3>ResNet18 vs ViT（最优对比）</h3>
+        <p>ResNet18（预训练 + pos_weight）对 ViT（预训练 + pos_weight）：</p>
+        <ul>
+          <li>Test AUC：ResNet 0.7942 vs ViT 0.7846（<span class="highlight">+1.2%</span>）</li>
+          <li>训练总时间：ResNet 29min vs ViT 61min（效率约 2×）</li>
+        </ul>
+        <p class="insight">结论：在 ChestMNIST 小图任务上，ResNet18 比 ViT 更高效、泛化更稳定。</p>
+      </div>
+    </div>
+
+    <!-- Training curves for best model -->
+    <div class="card" style="margin-top:1.2rem;">
+      <h3 class="card-title">最优模型训练曲线（fair_resnet18_reg2）</h3>
+      <div class="fig-single">
+        <a href="fair_resnet18_reg2/metrics_curve.png" target="_blank" rel="noopener noreferrer">
+          <img src="fair_resnet18_reg2/metrics_curve.png" alt="ResNet18 训练曲线" loading="lazy"/>
+        </a>
+        <figcaption>Train Loss / Val Loss / Val AUC · 14 epochs · 未出现明显过拟合</figcaption>
+      </div>
     </div>
   </section>
 
-  <section class="card">
-    <h2>阅读建议（面试官视角）</h2>
-    <ol>
-      <li>先看 AUC 对比，快速定位最优模型</li>
-      <li>查看训练曲线，判断是否过拟合</li>
-      <li>Grad-CAM 检查模型是否关注肺野病灶区域</li>
-      <li>错误样例分析漏检 / 过检模式与类别不平衡影响</li>
-    </ol>
+  <!-- ===== INTERPRETABILITY (GradCAM) ===== -->
+  <section class="section" id="interpretability">
+    <h2 class="section-title">可解释性 · Grad-CAM</h2>
+    <p class="section-desc">使用 Grad-CAM 可视化模型在各类别上的激活区域，验证模型是否关注肺野/病灶区域（而非背景噪声）。</p>
+
+    <div class="exp-tabs">
+      <!-- Experiment 1 -->
+      <details class="exp-detail" open>
+        <summary class="exp-summary">
+          <span class="tag tag-vit">ViT</span>
+          <strong>vit_pretrain_off_posw_off</strong>
+          <span class="auc-chip">Test AUC 0.7623</span>
+        </summary>
+        <div class="cam-grid">
+          <div class="cam-item">
+            <a href="vit_pretrain_off_posw_off/gradcam/gradcam_000_c3.png" target="_blank" rel="noopener noreferrer">
+              <img src="vit_pretrain_off_posw_off/gradcam/gradcam_000_c3.png" alt="GradCAM c3" loading="lazy"/>
+            </a>
+            <span>样本 000 · Class 3</span>
+          </div>
+          <div class="cam-item">
+            <a href="vit_pretrain_off_posw_off/gradcam/gradcam_001_c3.png" target="_blank" rel="noopener noreferrer">
+              <img src="vit_pretrain_off_posw_off/gradcam/gradcam_001_c3.png" alt="GradCAM c3" loading="lazy"/>
+            </a>
+            <span>样本 001 · Class 3</span>
+          </div>
+          <div class="cam-item">
+            <a href="vit_pretrain_off_posw_off/gradcam/gradcam_002_c3.png" target="_blank" rel="noopener noreferrer">
+              <img src="vit_pretrain_off_posw_off/gradcam/gradcam_002_c3.png" alt="GradCAM c3" loading="lazy"/>
+            </a>
+            <span>样本 002 · Class 3</span>
+          </div>
+          <div class="cam-item">
+            <a href="vit_pretrain_off_posw_off/gradcam/gradcam_003_c3.png" target="_blank" rel="noopener noreferrer">
+              <img src="vit_pretrain_off_posw_off/gradcam/gradcam_003_c3.png" alt="GradCAM c3" loading="lazy"/>
+            </a>
+            <span>样本 003 · Class 3</span>
+          </div>
+        </div>
+      </details>
+
+      <!-- Experiment 2 -->
+      <details class="exp-detail">
+        <summary class="exp-summary">
+          <span class="tag tag-vit">ViT</span>
+          <strong>vit_pretrain_on_posw_off</strong>
+          <span class="auc-chip">Test AUC 0.7890</span>
+        </summary>
+        <div class="cam-grid">
+          <div class="cam-item">
+            <a href="vit_pretrain_on_posw_off/gradcam/gradcam_000_c4.png" target="_blank" rel="noopener noreferrer">
+              <img src="vit_pretrain_on_posw_off/gradcam/gradcam_000_c4.png" alt="GradCAM c4" loading="lazy"/>
+            </a>
+            <span>样本 000 · Class 4</span>
+          </div>
+          <div class="cam-item">
+            <a href="vit_pretrain_on_posw_off/gradcam/gradcam_001_c3.png" target="_blank" rel="noopener noreferrer">
+              <img src="vit_pretrain_on_posw_off/gradcam/gradcam_001_c3.png" alt="GradCAM c3" loading="lazy"/>
+            </a>
+            <span>样本 001 · Class 3</span>
+          </div>
+          <div class="cam-item">
+            <a href="vit_pretrain_on_posw_off/gradcam/gradcam_002_c3.png" target="_blank" rel="noopener noreferrer">
+              <img src="vit_pretrain_on_posw_off/gradcam/gradcam_002_c3.png" alt="GradCAM c3" loading="lazy"/>
+            </a>
+            <span>样本 002 · Class 3</span>
+          </div>
+          <div class="cam-item">
+            <a href="vit_pretrain_on_posw_off/gradcam/gradcam_003_c3.png" target="_blank" rel="noopener noreferrer">
+              <img src="vit_pretrain_on_posw_off/gradcam/gradcam_003_c3.png" alt="GradCAM c3" loading="lazy"/>
+            </a>
+            <span>样本 003 · Class 3</span>
+          </div>
+        </div>
+      </details>
+
+      <!-- Experiment 3 -->
+      <details class="exp-detail">
+        <summary class="exp-summary">
+          <span class="tag tag-vit">ViT</span>
+          <strong>vit_pretrain_on_posw_on</strong>
+          <span class="auc-chip">Test AUC 0.7846</span>
+        </summary>
+        <div class="cam-grid">
+          <div class="cam-item">
+            <a href="vit_pretrain_on_posw_on/gradcam/gradcam_000_c5.png" target="_blank" rel="noopener noreferrer">
+              <img src="vit_pretrain_on_posw_on/gradcam/gradcam_000_c5.png" alt="GradCAM c5" loading="lazy"/>
+            </a>
+            <span>样本 000 · Class 5</span>
+          </div>
+          <div class="cam-item">
+            <a href="vit_pretrain_on_posw_on/gradcam/gradcam_001_c5.png" target="_blank" rel="noopener noreferrer">
+              <img src="vit_pretrain_on_posw_on/gradcam/gradcam_001_c5.png" alt="GradCAM c5" loading="lazy"/>
+            </a>
+            <span>样本 001 · Class 5</span>
+          </div>
+          <div class="cam-item">
+            <a href="vit_pretrain_on_posw_on/gradcam/gradcam_002_c5.png" target="_blank" rel="noopener noreferrer">
+              <img src="vit_pretrain_on_posw_on/gradcam/gradcam_002_c5.png" alt="GradCAM c5" loading="lazy"/>
+            </a>
+            <span>样本 002 · Class 5</span>
+          </div>
+          <div class="cam-item">
+            <a href="vit_pretrain_on_posw_on/gradcam/gradcam_003_c5.png" target="_blank" rel="noopener noreferrer">
+              <img src="vit_pretrain_on_posw_on/gradcam/gradcam_003_c5.png" alt="GradCAM c5" loading="lazy"/>
+            </a>
+            <span>样本 003 · Class 5</span>
+          </div>
+        </div>
+      </details>
+
+      <!-- Experiment 4 (Best) -->
+      <details class="exp-detail" open>
+        <summary class="exp-summary">
+          <span class="tag tag-res">ResNet18</span>
+          <strong>fair_resnet18_reg2</strong>
+          <span class="auc-chip auc-chip-best">Test AUC 0.7942 🏆</span>
+        </summary>
+        <div class="cam-grid">
+          <div class="cam-item">
+            <a href="fair_resnet18_reg2/gradcam/gradcam_000_c5.png" target="_blank" rel="noopener noreferrer">
+              <img src="fair_resnet18_reg2/gradcam/gradcam_000_c5.png" alt="GradCAM c5" loading="lazy"/>
+            </a>
+            <span>样本 000 · Class 5</span>
+          </div>
+          <div class="cam-item">
+            <a href="fair_resnet18_reg2/gradcam/gradcam_001_c5.png" target="_blank" rel="noopener noreferrer">
+              <img src="fair_resnet18_reg2/gradcam/gradcam_001_c5.png" alt="GradCAM c5" loading="lazy"/>
+            </a>
+            <span>样本 001 · Class 5</span>
+          </div>
+          <div class="cam-item">
+            <a href="fair_resnet18_reg2/gradcam/gradcam_002_c5.png" target="_blank" rel="noopener noreferrer">
+              <img src="fair_resnet18_reg2/gradcam/gradcam_002_c5.png" alt="GradCAM c5" loading="lazy"/>
+            </a>
+            <span>样本 002 · Class 5</span>
+          </div>
+          <div class="cam-item">
+            <a href="fair_resnet18_reg2/gradcam/gradcam_003_c5.png" target="_blank" rel="noopener noreferrer">
+              <img src="fair_resnet18_reg2/gradcam/gradcam_003_c5.png" alt="GradCAM c5" loading="lazy"/>
+            </a>
+            <span>样本 003 · Class 5</span>
+          </div>
+          <div class="cam-item">
+            <a href="fair_resnet18_reg2/gradcam/gradcam_004_c7.png" target="_blank" rel="noopener noreferrer">
+              <img src="fair_resnet18_reg2/gradcam/gradcam_004_c7.png" alt="GradCAM c7" loading="lazy"/>
+            </a>
+            <span>样本 004 · Class 7</span>
+          </div>
+          <div class="cam-item">
+            <a href="fair_resnet18_reg2/gradcam/gradcam_005_c7.png" target="_blank" rel="noopener noreferrer">
+              <img src="fair_resnet18_reg2/gradcam/gradcam_005_c7.png" alt="GradCAM c7" loading="lazy"/>
+            </a>
+            <span>样本 005 · Class 7</span>
+          </div>
+          <div class="cam-item">
+            <a href="fair_resnet18_reg2/gradcam/gradcam_006_c5.png" target="_blank" rel="noopener noreferrer">
+              <img src="fair_resnet18_reg2/gradcam/gradcam_006_c5.png" alt="GradCAM c5" loading="lazy"/>
+            </a>
+            <span>样本 006 · Class 5</span>
+          </div>
+          <div class="cam-item">
+            <a href="fair_resnet18_reg2/gradcam/gradcam_007_c4.png" target="_blank" rel="noopener noreferrer">
+              <img src="fair_resnet18_reg2/gradcam/gradcam_007_c4.png" alt="GradCAM c4" loading="lazy"/>
+            </a>
+            <span>样本 007 · Class 4</span>
+          </div>
+        </div>
+      </details>
+    </div>
   </section>
-</div>
+
+  <!-- ===== ERROR ANALYSIS ===== -->
+  <section class="section" id="error-analysis">
+    <h2 class="section-title">错误分析 · Error Analysis</h2>
+    <p class="section-desc">对测试集中置信度最高的误预测样本进行可视化分析，定位漏检（FN）与误检（FP）模式，结合类别不平衡的影响进行归因。</p>
+
+    <div class="exp-tabs">
+      <!-- Best model error analysis (shown open) -->
+      <details class="exp-detail" open>
+        <summary class="exp-summary">
+          <span class="tag tag-res">ResNet18</span>
+          <strong>fair_resnet18_reg2</strong>
+          <span class="auc-chip auc-chip-best">最优模型 · Test AUC 0.7942</span>
+          <a class="ql-btn-sm" href="fair_resnet18_reg2/error_analysis/errors_topk.json" target="_blank" rel="noopener noreferrer">📋 JSON</a>
+        </summary>
+        <div class="err-grid">
+          <div class="err-item">
+            <a href="fair_resnet18_reg2/error_analysis/error_01_id13260.png" target="_blank" rel="noopener noreferrer">
+              <img src="fair_resnet18_reg2/error_analysis/error_01_id13260.png" alt="Error 01" loading="lazy"/>
+            </a>
+            <span>错误样本 #01</span>
+          </div>
+          <div class="err-item">
+            <a href="fair_resnet18_reg2/error_analysis/error_02_id19088.png" target="_blank" rel="noopener noreferrer">
+              <img src="fair_resnet18_reg2/error_analysis/error_02_id19088.png" alt="Error 02" loading="lazy"/>
+            </a>
+            <span>错误样本 #02</span>
+          </div>
+          <div class="err-item">
+            <a href="fair_resnet18_reg2/error_analysis/error_03_id2207.png" target="_blank" rel="noopener noreferrer">
+              <img src="fair_resnet18_reg2/error_analysis/error_03_id2207.png" alt="Error 03" loading="lazy"/>
+            </a>
+            <span>错误样本 #03</span>
+          </div>
+          <div class="err-item">
+            <a href="fair_resnet18_reg2/error_analysis/error_04_id18347.png" target="_blank" rel="noopener noreferrer">
+              <img src="fair_resnet18_reg2/error_analysis/error_04_id18347.png" alt="Error 04" loading="lazy"/>
+            </a>
+            <span>错误样本 #04</span>
+          </div>
+          <div class="err-item">
+            <a href="fair_resnet18_reg2/error_analysis/error_05_id13995.png" target="_blank" rel="noopener noreferrer">
+              <img src="fair_resnet18_reg2/error_analysis/error_05_id13995.png" alt="Error 05" loading="lazy"/>
+            </a>
+            <span>错误样本 #05</span>
+          </div>
+          <div class="err-item">
+            <a href="fair_resnet18_reg2/error_analysis/error_06_id6042.png" target="_blank" rel="noopener noreferrer">
+              <img src="fair_resnet18_reg2/error_analysis/error_06_id6042.png" alt="Error 06" loading="lazy"/>
+            </a>
+            <span>错误样本 #06</span>
+          </div>
+        </div>
+      </details>
+
+      <details class="exp-detail">
+        <summary class="exp-summary">
+          <span class="tag tag-vit">ViT</span>
+          <strong>vit_pretrain_on_posw_off</strong>
+          <span class="auc-chip">Test AUC 0.7890</span>
+          <a class="ql-btn-sm" href="vit_pretrain_on_posw_off/error_analysis/errors_topk.json" target="_blank" rel="noopener noreferrer">📋 JSON</a>
+        </summary>
+        <div class="err-grid">
+          <div class="err-item">
+            <a href="vit_pretrain_on_posw_off/error_analysis/error_01_id2584.png" target="_blank" rel="noopener noreferrer">
+              <img src="vit_pretrain_on_posw_off/error_analysis/error_01_id2584.png" alt="Error 01" loading="lazy"/>
+            </a>
+            <span>错误样本 #01</span>
+          </div>
+          <div class="err-item">
+            <a href="vit_pretrain_on_posw_off/error_analysis/error_02_id7154.png" target="_blank" rel="noopener noreferrer">
+              <img src="vit_pretrain_on_posw_off/error_analysis/error_02_id7154.png" alt="Error 02" loading="lazy"/>
+            </a>
+            <span>错误样本 #02</span>
+          </div>
+          <div class="err-item">
+            <a href="vit_pretrain_on_posw_off/error_analysis/error_03_id915.png" target="_blank" rel="noopener noreferrer">
+              <img src="vit_pretrain_on_posw_off/error_analysis/error_03_id915.png" alt="Error 03" loading="lazy"/>
+            </a>
+            <span>错误样本 #03</span>
+          </div>
+          <div class="err-item">
+            <a href="vit_pretrain_on_posw_off/error_analysis/error_04_id5086.png" target="_blank" rel="noopener noreferrer">
+              <img src="vit_pretrain_on_posw_off/error_analysis/error_04_id5086.png" alt="Error 04" loading="lazy"/>
+            </a>
+            <span>错误样本 #04</span>
+          </div>
+        </div>
+      </details>
+
+      <details class="exp-detail">
+        <summary class="exp-summary">
+          <span class="tag tag-vit">ViT</span>
+          <strong>vit_pretrain_on_posw_on</strong>
+          <span class="auc-chip">Test AUC 0.7846</span>
+          <a class="ql-btn-sm" href="vit_pretrain_on_posw_on/error_analysis/errors_topk.json" target="_blank" rel="noopener noreferrer">📋 JSON</a>
+        </summary>
+        <div class="err-grid">
+          <div class="err-item">
+            <a href="vit_pretrain_on_posw_on/error_analysis/error_01_id14381.png" target="_blank" rel="noopener noreferrer">
+              <img src="vit_pretrain_on_posw_on/error_analysis/error_01_id14381.png" alt="Error 01" loading="lazy"/>
+            </a>
+            <span>错误样本 #01</span>
+          </div>
+          <div class="err-item">
+            <a href="vit_pretrain_on_posw_on/error_analysis/error_02_id17611.png" target="_blank" rel="noopener noreferrer">
+              <img src="vit_pretrain_on_posw_on/error_analysis/error_02_id17611.png" alt="Error 02" loading="lazy"/>
+            </a>
+            <span>错误样本 #02</span>
+          </div>
+          <div class="err-item">
+            <a href="vit_pretrain_on_posw_on/error_analysis/error_03_id19088.png" target="_blank" rel="noopener noreferrer">
+              <img src="vit_pretrain_on_posw_on/error_analysis/error_03_id19088.png" alt="Error 03" loading="lazy"/>
+            </a>
+            <span>错误样本 #03</span>
+          </div>
+          <div class="err-item">
+            <a href="vit_pretrain_on_posw_on/error_analysis/error_04_id9189.png" target="_blank" rel="noopener noreferrer">
+              <img src="vit_pretrain_on_posw_on/error_analysis/error_04_id9189.png" alt="Error 04" loading="lazy"/>
+            </a>
+            <span>错误样本 #04</span>
+          </div>
+        </div>
+      </details>
+
+      <details class="exp-detail">
+        <summary class="exp-summary">
+          <span class="tag tag-vit">ViT</span>
+          <strong>vit_pretrain_off_posw_off</strong>
+          <span class="auc-chip">Test AUC 0.7623</span>
+          <a class="ql-btn-sm" href="vit_pretrain_off_posw_off/error_analysis/errors_topk.json" target="_blank" rel="noopener noreferrer">📋 JSON</a>
+        </summary>
+        <div class="err-grid">
+          <div class="err-item">
+            <a href="vit_pretrain_off_posw_off/error_analysis/error_01_id7154.png" target="_blank" rel="noopener noreferrer">
+              <img src="vit_pretrain_off_posw_off/error_analysis/error_01_id7154.png" alt="Error 01" loading="lazy"/>
+            </a>
+            <span>错误样本 #01</span>
+          </div>
+          <div class="err-item">
+            <a href="vit_pretrain_off_posw_off/error_analysis/error_02_id13855.png" target="_blank" rel="noopener noreferrer">
+              <img src="vit_pretrain_off_posw_off/error_analysis/error_02_id13855.png" alt="Error 02" loading="lazy"/>
+            </a>
+            <span>错误样本 #02</span>
+          </div>
+          <div class="err-item">
+            <a href="vit_pretrain_off_posw_off/error_analysis/error_03_id915.png" target="_blank" rel="noopener noreferrer">
+              <img src="vit_pretrain_off_posw_off/error_analysis/error_03_id915.png" alt="Error 03" loading="lazy"/>
+            </a>
+            <span>错误样本 #03</span>
+          </div>
+          <div class="err-item">
+            <a href="vit_pretrain_off_posw_off/error_analysis/error_04_id2584.png" target="_blank" rel="noopener noreferrer">
+              <img src="vit_pretrain_off_posw_off/error_analysis/error_04_id2584.png" alt="Error 04" loading="lazy"/>
+            </a>
+            <span>错误样本 #04</span>
+          </div>
+        </div>
+      </details>
+    </div>
+
+    <div class="card insight-card" style="margin-top:1rem;">
+      <h3 class="card-title">错误模式归因</h3>
+      <ul>
+        <li><strong>漏检（FN）主因：</strong>低频类别（正例率 &lt;5%）的激活信号弱，模型倾向保守预测 0；pos_weight 可缓解但未根治。</li>
+        <li><strong>误检（FP）主因：</strong>高 pos_weight 的类别激活阈值偏低，低质量 28×28 图像中纹理歧义触发假阳性。</li>
+        <li><strong>可改进方向：</strong>自适应阈值调整（per-class）、Focal Loss、超分辨率预处理、数据增强（SimCLR 对比学习）。</li>
+      </ul>
+    </div>
+  </section>
+
+  <!-- ===== REPRODUCIBILITY ===== -->
+  <section class="section" id="reproducibility">
+    <h2 class="section-title">复现指南 · Reproducibility</h2>
+    <div class="repro-grid">
+      <div class="card">
+        <h3 class="card-title">环境配置</h3>
+        <table class="info-table">
+          <tr><td class="ik">Python</td><td>3.10+</td></tr>
+          <tr><td class="ik">PyTorch</td><td>2.x + CUDA 11.8</td></tr>
+          <tr><td class="ik">关键依赖</td><td>timm, medmnist, grad-cam, matplotlib</td></tr>
+          <tr><td class="ik">随机种子</td><td>seed = 42（所有实验固定）</td></tr>
+          <tr><td class="ik">硬件</td><td>单卡 GPU（实验在 CUDA 上训练）</td></tr>
+        </table>
+      </div>
+      <div class="card">
+        <h3 class="card-title">训练超参数（最优模型）</h3>
+        <table class="info-table">
+          <tr><td class="ik">模型</td><td>ResNet18（torchvision, pretrained=True）</td></tr>
+          <tr><td class="ik">Optimizer</td><td>AdamW, lr=5e-5, weight_decay=0.012</td></tr>
+          <tr><td class="ik">Batch size</td><td>16 × grad_accum_steps 8 = 有效 128</td></tr>
+          <tr><td class="ik">Epochs</td><td>14（早停 best val AUC）</td></tr>
+          <tr><td class="ik">AMP</td><td>是（fp16 混合精度）</td></tr>
+          <tr><td class="ik">Dropout</td><td>0.5</td></tr>
+        </table>
+      </div>
+      <div class="card">
+        <h3 class="card-title">实验配置文件（JSON）</h3>
+        <p style="margin-bottom:.6rem;color:#64748b;font-size:.9rem;">每个实验目录下均包含完整的 config.json / metrics.json / final_result.json，可直接查阅复现参数。</p>
+        <div class="json-links">
+          <a href="fair_resnet18_reg2/config.json" target="_blank" rel="noopener noreferrer" class="ql-btn">fair_resnet18 config</a>
+          <a href="vit_pretrain_on_posw_off/config.json" target="_blank" rel="noopener noreferrer" class="ql-btn">vit_on_off config</a>
+          <a href="vit_pretrain_on_posw_on/config.json" target="_blank" rel="noopener noreferrer" class="ql-btn">vit_on_on config</a>
+          <a href="vit_pretrain_off_posw_off/config.json" target="_blank" rel="noopener noreferrer" class="ql-btn">vit_off_off config</a>
+        </div>
+        <div class="json-links" style="margin-top:.5rem;">
+          <a href="fair_resnet18_reg2/final_result.json" target="_blank" rel="noopener noreferrer" class="ql-btn">fair_resnet18 result</a>
+          <a href="vit_pretrain_on_posw_off/final_result.json" target="_blank" rel="noopener noreferrer" class="ql-btn">vit_on_off result</a>
+          <a href="vit_pretrain_on_posw_on/final_result.json" target="_blank" rel="noopener noreferrer" class="ql-btn">vit_on_on result</a>
+          <a href="vit_pretrain_off_posw_off/final_result.json" target="_blank" rel="noopener noreferrer" class="ql-btn">vit_off_off result</a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+</main>
+
+<!-- ===== FOOTER ===== -->
+<footer class="site-footer">
+  <div class="footer-inner">
+    <p>ChestMNIST Multi-Label Classification Portfolio &mdash; ResNet18 · ViT-B/16 · Grad-CAM · Error Analysis</p>
+    <p class="footer-sub">数据来源：<a href="https://medmnist.com/" target="_blank" rel="noopener noreferrer">MedMNIST v2</a> · NIH ChestX-ray14</p>
+  </div>
+</footer>
+
+<script>
+// Smooth scroll offset for sticky nav
+document.querySelectorAll('a[href^="#"]').forEach(function(a){
+  a.addEventListener('click', function(e){
+    var target = document.querySelector(this.getAttribute('href'));
+    if(target){
+      e.preventDefault();
+      var offset = 56;
+      var top = target.getBoundingClientRect().top + window.scrollY - offset;
+      window.scrollTo({top: top, behavior: 'smooth'});
+    }
+  });
+});
+
+// Mobile nav toggle
+document.getElementById('navToggle').addEventListener('click', function(){
+  document.querySelector('.nav-links').classList.toggle('nav-open');
+});
+
+// Active nav highlight on scroll
+(function(){
+  var sections = ['overview','task','results','ablations','interpretability','error-analysis','reproducibility'];
+  var links = {};
+  sections.forEach(function(id){
+    var link = document.querySelector('.nav-links a[href="#'+id+'"]');
+    if(link) links[id] = link;
+  });
+  function onScroll(){
+    var scrollY = window.scrollY + 80;
+    var active = sections[0];
+    sections.forEach(function(id){
+      var el = document.getElementById(id);
+      if(el && el.offsetTop <= scrollY) active = id;
+    });
+    Object.keys(links).forEach(function(id){
+      links[id].classList.toggle('nav-active', id === active);
+    });
+  }
+  window.addEventListener('scroll', onScroll, {passive: true});
+  onScroll();
+})();
+</script>
 
 </body>
 </html>
