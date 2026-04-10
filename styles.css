@@ -1,0 +1,79 @@
+﻿:root {
+  --bg: #f7f5ef;
+  --paper: #fffdf7;
+  --ink: #1f1f1f;
+  --line: #d8d1bf;
+  --accent: #1f6f5f;
+}
+* { box-sizing: border-box; }
+body {
+  margin: 0;
+  font-family: "Segoe UI", "PingFang SC", "Microsoft YaHei", sans-serif;
+  color: var(--ink);
+  background:
+    radial-gradient(circle at 0% 0%, #f0ead8 0, transparent 40%),
+    radial-gradient(circle at 100% 100%, #e9f2ef 0, transparent 35%),
+    var(--bg);
+}
+.hero {
+  padding: 48px 20px 20px;
+  text-align: center;
+}
+.hero h1 {
+  margin: 0 0 10px;
+  font-size: clamp(28px, 4vw, 42px);
+}
+.hero p { margin: 0; opacity: 0.85; }
+.container {
+  width: min(1100px, 94vw);
+  margin: 18px auto 40px;
+  display: grid;
+  gap: 16px;
+}
+.card {
+  background: var(--paper);
+  border: 1px solid var(--line);
+  border-radius: 14px;
+  padding: 16px;
+}
+.card h2 { margin-top: 0; }
+.grid2 {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 12px;
+}
+figure { margin: 0; }
+img {
+  width: 100%;
+  border-radius: 10px;
+  border: 1px solid #ddd;
+}
+figcaption {
+  margin-top: 8px;
+  font-size: 14px;
+  opacity: 0.85;
+}
+.exp-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 12px;
+}
+.exp-grid article {
+  border: 1px dashed var(--line);
+  border-radius: 10px;
+  padding: 12px;
+  display: grid;
+  gap: 8px;
+}
+.exp-grid h3 {
+  margin: 0 0 4px;
+  font-size: 16px;
+}
+a {
+  color: var(--accent);
+  text-decoration: none;
+}
+a:hover { text-decoration: underline; }
+@media (max-width: 900px) {
+  .grid2, .exp-grid { grid-template-columns: 1fr; }
+}

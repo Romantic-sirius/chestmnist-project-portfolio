@@ -1,0 +1,39 @@
+{
+  "dataset": "chestmnist",
+  "model": "resnet18",
+  "num_classes": 14,
+  "pretrained": true,
+  "vit_pretrained_path": null,
+  "dropout": 0.5,
+  "batch_size": 16,
+  "learning_rate": 5e-05,
+  "weight_decay": 0.012,
+  "use_pos_weight": true,
+  "pos_weight_max": 20.0,
+  "pos_weight_eps": 1e-06,
+  "num_workers": 8,
+  "seed": 42,
+  "device": "cuda",
+  "amp": true,
+  "grad_accum_steps": 8,
+  "output_dir": "/root/portfolio_chestmnist/output_experiment/fair_resnet18_reg2",
+  "run_history": [
+    {
+      "start_epoch": 1,
+      "added_epochs": 30,
+      "arch": "resnet18",
+      "pretrained": true,
+      "vit_pretrained_path": null,
+      "dropout": 0.5,
+      "batch_size": 16,
+      "learning_rate": 5e-05,
+      "weight_decay": 0.012,
+      "use_pos_weight": true,
+      "amp": true,
+      "grad_accum_steps": 8,
+      "seed": 42,
+      "fresh_start": false,
+      "timestamp": 1775802144
+    }
+  ]
+}

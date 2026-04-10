@@ -1,0 +1,122 @@
+[
+  {
+    "rank": 1,
+    "sample_id": 13260,
+    "mismatch_count": 11,
+    "sample_loss": 1.3268858194351196,
+    "avg_confidence": 0.5163115859031677,
+    "true_labels": "fibrosis, hernia",
+    "pred_labels": "atelectasis, effusion, infiltration, mass, nodule, pneumothorax, consolidation, emphysema, pleural",
+    "image_path": "fair_resnet18_reg2/error_analysis/error_01_id13260.png"
+  },
+  {
+    "rank": 2,
+    "sample_id": 19088,
+    "mismatch_count": 10,
+    "sample_loss": 0.9722492098808289,
+    "avg_confidence": 0.4604215919971466,
+    "true_labels": "None",
+    "pred_labels": "atelectasis, cardiomegaly, effusion, infiltration, mass, nodule, pneumothorax, consolidation, edema, pleural",
+    "image_path": "fair_resnet18_reg2/error_analysis/error_02_id19088.png"
+  },
+  {
+    "rank": 3,
+    "sample_id": 2207,
+    "mismatch_count": 10,
+    "sample_loss": 0.9576222896575928,
+    "avg_confidence": 0.43555566668510437,
+    "true_labels": "infiltration, pneumonia, edema",
+    "pred_labels": "atelectasis, cardiomegaly, effusion, infiltration, mass, nodule, pneumothorax, consolidation, emphysema",
+    "image_path": "fair_resnet18_reg2/error_analysis/error_03_id2207.png"
+  },
+  {
+    "rank": 4,
+    "sample_id": 18347,
+    "mismatch_count": 10,
+    "sample_loss": 0.9565517902374268,
+    "avg_confidence": 0.38598790764808655,
+    "true_labels": "mass, emphysema",
+    "pred_labels": "atelectasis, cardiomegaly, effusion, infiltration, mass, nodule, pneumonia, consolidation, edema, pleural",
+    "image_path": "fair_resnet18_reg2/error_analysis/error_04_id18347.png"
+  },
+  {
+    "rank": 5,
+    "sample_id": 13995,
+    "mismatch_count": 10,
+    "sample_loss": 0.8936720490455627,
+    "avg_confidence": 0.45517393946647644,
+    "true_labels": "None",
+    "pred_labels": "atelectasis, effusion, infiltration, mass, nodule, pneumothorax, consolidation, edema, emphysema, pleural",
+    "image_path": "fair_resnet18_reg2/error_analysis/error_05_id13995.png"
+  },
+  {
+    "rank": 6,
+    "sample_id": 6042,
+    "mismatch_count": 10,
+    "sample_loss": 0.8576265573501587,
+    "avg_confidence": 0.4004797339439392,
+    "true_labels": "None",
+    "pred_labels": "atelectasis, cardiomegaly, effusion, infiltration, mass, nodule, pneumothorax, consolidation, emphysema, pleural",
+    "image_path": "fair_resnet18_reg2/error_analysis/error_06_id6042.png"
+  },
+  {
+    "rank": 7,
+    "sample_id": 14381,
+    "mismatch_count": 10,
+    "sample_loss": 0.8527852892875671,
+    "avg_confidence": 0.36130693554878235,
+    "true_labels": "pneumonia, edema",
+    "pred_labels": "atelectasis, effusion, infiltration, mass, nodule, pneumothorax, consolidation, emphysema",
+    "image_path": "fair_resnet18_reg2/error_analysis/error_07_id14381.png"
+  },
+  {
+    "rank": 8,
+    "sample_id": 14494,
+    "mismatch_count": 10,
+    "sample_loss": 0.8311684727668762,
+    "avg_confidence": 0.4045243263244629,
+    "true_labels": "None",
+    "pred_labels": "atelectasis, cardiomegaly, effusion, infiltration, mass, nodule, pneumothorax, consolidation, emphysema, pleural",
+    "image_path": "fair_resnet18_reg2/error_analysis/error_08_id14494.png"
+  },
+  {
+    "rank": 9,
+    "sample_id": 6258,
+    "mismatch_count": 10,
+    "sample_loss": 0.7068555951118469,
+    "avg_confidence": 0.19153191149234772,
+    "true_labels": "edema",
+    "pred_labels": "atelectasis, effusion, infiltration, mass, nodule, pneumothorax, consolidation, fibrosis, pleural",
+    "image_path": "fair_resnet18_reg2/error_analysis/error_09_id6258.png"
+  },
+  {
+    "rank": 10,
+    "sample_id": 18556,
+    "mismatch_count": 9,
+    "sample_loss": 1.21323823928833,
+    "avg_confidence": 0.6387514472007751,
+    "true_labels": "None",
+    "pred_labels": "atelectasis, effusion, infiltration, mass, nodule, pneumothorax, consolidation, emphysema, pleural",
+    "image_path": "fair_resnet18_reg2/error_analysis/error_10_id18556.png"
+  },
+  {
+    "rank": 11,
+    "sample_id": 16959,
+    "mismatch_count": 9,
+    "sample_loss": 1.1057473421096802,
+    "avg_confidence": 0.5300443768501282,
+    "true_labels": "infiltration, pneumonia, edema",
+    "pred_labels": "atelectasis, effusion, infiltration, mass, nodule, pneumothorax, emphysema, pleural",
+    "image_path": "fair_resnet18_reg2/error_analysis/error_11_id16959.png"
+  },
+  {
+    "rank": 12,
+    "sample_id": 10721,
+    "mismatch_count": 9,
+    "sample_loss": 1.0278891324996948,
+    "avg_confidence": 0.483737051486969,
+    "true_labels": "atelectasis, pneumonia",
+    "pred_labels": "atelectasis, effusion, infiltration, mass, nodule, pneumothorax, consolidation, emphysema, pleural",
+    "image_path": "fair_resnet18_reg2/error_analysis/error_12_id10721.png"
+  }
+]

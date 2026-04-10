@@ -1,0 +1,10 @@
+{
+  "best_val_auc": 0.7950537950224322,
+  "final_test_loss": 0.8066117126687777,
+  "final_test_auc": 0.7942187138836246,
+  "best_model_path": "/root/portfolio_chestmnist/output_experiment/fair_resnet18_reg2/best_model.pth",
+  "last_model_path": "/root/portfolio_chestmnist/output_experiment/fair_resnet18_reg2/last_model.pth",
+  "total_train_seconds": 1740.0424058437347,
+  "last_run_seconds": 1740.0424058437347,
+  "total_epochs_recorded": 14
+}

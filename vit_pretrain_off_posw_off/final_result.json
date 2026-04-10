@@ -1,0 +1,10 @@
+{
+  "best_val_auc": 0.7652744813050233,
+  "final_test_loss": 0.16488395918336538,
+  "final_test_auc": 0.7623356265398343,
+  "best_model_path": "/root/portfolio_chestmnist/output_experiment/vit_pretrain_off_posw_off/best_model.pth",
+  "last_model_path": "/root/portfolio_chestmnist/output_experiment/vit_pretrain_off_posw_off/last_model.pth",
+  "total_train_seconds": 11447.38395524025,
+  "last_run_seconds": 11447.38395524025,
+  "total_epochs_recorded": 28
+}
